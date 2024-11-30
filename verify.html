@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Schemes in India</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        #schemeList {
+            margin-top: 20px;
+        }
+        .scheme {
+            background-color: #e7f7e7;
+            border: 1px solid #d0f0c0;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <p style="font-size: xx-large;"><b>Farmer Schemes in India</b></p>
+    <p style="font-size: 20px">Enter your annual income to know which schemes you are eligible for</p>
+</header>
+
+<div class="container">
+    <div class="form-group">
+        <label for="income">Enter Annual Income (₹):</label>
+        <input type="number" id="income" placeholder="Enter your annual income" />
+    </div>
+    <div class="form-group">
+        <button onclick="findSchemes()">Check Schemes</button>
+    </div>
+
+    <div id="schemeList"></div>
+</div>
+
+<script>
+    function findSchemes() {
+        let income = document.getElementById("income").value;
+        let schemes = [];
+        let schemeListDiv = document.getElementById("schemeList");
+
+        if (income === "" || isNaN(income)) {
+            schemeListDiv.innerHTML = "<p>Please enter a valid income.</p>";
+            return;
+        }
+
+        income = parseFloat(income);
+
+        // Example scheme data (replace with actual government schemes data)
+        const allSchemes = [
+            { name: "Pradhan Mantri Fasal Bima Yojana", minIncome: 0, maxIncome: 500000 },
+            { name: "PM Kisan Samman Nidhi", minIncome: 0, maxIncome: 200000 },
+            { name: "Kisan Credit Card Scheme", minIncome: 200000, maxIncome: 1000000 },
+            { name: "Soil Health Card Scheme", minIncome: 0, maxIncome: 1000000 },
+            { name: "National Agriculture Market (eNAM)", minIncome: 0, maxIncome: 500000 },
+        ];
+
+        // Filter schemes based on income
+        schemes = allSchemes.filter(scheme => income >= scheme.minIncome && income <= scheme.maxIncome);
+
+        if (schemes.length > 0) {
+            schemeListDiv.innerHTML = "<h3>Eligible Schemes:</h3>";
+            schemes.forEach(scheme => {
+                let schemeDiv = document.createElement("div");
+                schemeDiv.classList.add("scheme");
+                schemeDiv.innerHTML = `<strong>${scheme.name}</strong>`;
+                schemeListDiv.appendChild(schemeDiv);
+            });
+        } else {
+            schemeListDiv.innerHTML = "<p>No schemes available for the entered income.</p>";
+        }
+    }
+</script>
+
+</body>
+</html>
+ 
