@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Growth Conditions</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.output {
+    font-size: 16px;
+    color: #333;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Crop Growth Conditions</h1>
+        <input type="text" id="crop-name" placeholder="Enter crop name" oninput="getCropCondition()">
+        <div id="condition-output" class="output">
+            <p>Enter a crop name to see the growth conditions.</p>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for crop conditions
+const cropConditions = {
+    "wheat": {
+        "temperature": "18-24°C",
+        "soilType": "Loamy soil",
+        "waterRequirement": "Moderate irrigation, avoid waterlogging"
+    },
+    "rice": {
+        "temperature": "25-32°C",
+        "soilType": "Clay or alluvial soil",
+        "waterRequirement": "High water requirement, requires flooded fields"
+    },
+    "corn": {
+        "temperature": "18-30°C",
+        "soilType": "Well-drained, loamy soil",
+        "waterRequirement": "High water requirement during germination"
+    },
+    "tomato": {
+        "temperature": "20-30°C",
+        "soilType": "Well-drained, fertile soil",
+        "waterRequirement": "Moderate water, avoid excessive watering"
+    },
+    "potato": {
+        "temperature": "15-20°C",
+        "soilType": "Loose, well-drained soil",
+        "waterRequirement": "Moderate irrigation"
+    },
+    "maize":{
+        "temperature":"18-27°C",
+        "soilType":" loamy sand to clay loam,alluvial ",
+        "waterRequirement":"consistent irrigation,especially during the critical growth stages "
+    },
+    "cotton":{
+        "temperature":"21-30°C",
+        "soilType":" well-drained, loamy soils,fertile soil ",
+        "waterRequirement":" frequent irrigation, especially during the flowering and boll development stages "
+    },
+    "sugarcane":{
+        "temperature":"25-32°C",
+        "soilType":" loamy soils ",
+        "waterRequirement":" quite high,water-intensive crop "
+    },
+    "millet":{
+        "temperature":"25-32°C",
+        "soilType":" Well-drained, Sandy Loam or Loamy Soil",
+        "waterRequirement":" relatively low compared to other crops "
+    }
+
+    
+};
+
+function getCropCondition() {
+    const cropName = document.getElementById('crop-name').value.toLowerCase();
+    const outputDiv = document.getElementById('condition-output');
+
+    if (cropName && cropConditions[cropName]) {
+        const condition = cropConditions[cropName];
+        outputDiv.innerHTML = `
+            <h3>Growth Conditions for ${cropName.charAt(0).toUpperCase() + cropName.slice(1)}:</h3>
+            <p><strong>Temperature:</strong> ${condition.temperature}</p>
+            <p><strong>Soil Type:</strong> ${condition.soilType}</p>
+            <p><strong>Water Requirement:</strong> ${condition.waterRequirement}</p>
+        `;
+    } else if (cropName) {
+        outputDiv.innerHTML = `<p>Sorry, no data available for "${cropName}".</p>`;
+    } else {
+        outputDiv.innerHTML = `<p>Enter a crop name to see the growth conditions.</p>`;
+    }
+}
+
+    </script>
+</body>
+</html>
