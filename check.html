@@ -5,55 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plant & Harvest Disease Detection</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      background-color: #f4f4f4;
-      text-align: center;
-    }
-    header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 20px;
-      font-size: 24px;
-    }
-    .upload-section {
-      margin: 20px;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: inline-block;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .result {
-      margin-top: 20px;
-      padding: 20px;
-    }
-    footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background-color: #f4f4f4; text-align: center; padding: 20px; }
+    header { background-color: #4CAF50; color: white; padding: 20px; font-size: 24px; }
+    .upload-section { margin: 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); display: inline-block; }
+    button { background-color: #4CAF50; color: white; border: none; padding: 10px 15px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+    button:hover { background-color: #45a049; }
+    .result { margin-top: 20px; padding: 20px; }
   </style>
 </head>
 <body>
@@ -68,8 +26,7 @@
     </section>
     <section class="result" id="result"></section>
   </main>
- 
-  
+
   <script>
     const detectBtn = document.getElementById('detectBtn');
     const imageInput = document.getElementById('imageInput');
@@ -82,40 +39,56 @@
       }
       
       const file = imageInput.files[0];
-      const formData = new FormData();
-      formData.append('image', file);
+      const reader = new FileReader();
 
-      const apiEndpoint = "https://plant.id/api/v34";
-      const apiKey = "YOUR_API_KEY";
+      reader.onloadend = async function () {
+        const base64Image = reader.result.split(',')[1]; // Convert image to Base64
+        
+        const apiEndpoint = "https://api.plant.id/v2/health_assessment";
+        const apiKey = "iQ1IWFFUARciGztEGLKdmcQJQ0DVSpJwxCBX9bGryDXeLzXW8c";
 
-      resultDiv.innerHTML = "Processing your image...";
+        const requestBody = {
+          api_key: apiKey,
+          images: [base64Image],
+          health_assessment: true,
+          similar_images: true
+        };
 
-      try {
-        const response = await fetch(apiEndpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: formData
-        });
+        resultDiv.innerHTML = "Processing your image...";
 
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.statusText}`);
+        try {
+          const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+          });
+
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          console.log(data);
+
+          if (data.health_assessment && data.health_assessment.diseases.length > 0) {
+            const diseaseInfo = data.health_assessment.diseases[0];
+            const disease = diseaseInfo.name || "Unknown";
+            const confidence = diseaseInfo.probability ? Math.round(diseaseInfo.probability * 100) : "N/A";
+
+            resultDiv.innerHTML = `
+              <h3>Detection Result:</h3>
+              <p><strong>Disease:</strong> ${disease}</p>
+              <p><strong>Confidence:</strong> ${confidence}%</p>
+            `;
+          } else {
+            resultDiv.innerHTML = "<p>No disease detected.</p>";
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
         }
+      };
 
-        const data = await response.json();
-
-        const disease = data.disease || "Unknown";
-        const confidence = data.confidence ? Math.round(data.confidence * 100) : "N/A";
-
-        resultDiv.innerHTML = `
-          <h3>Detection Result:</h3>
-          <p><strong>Disease:</strong> ${disease}</p>
-          <p><strong>Confidence:</strong> ${confidence}%</p>
-        `;
-      } catch (error) {
-        resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-      }
+      reader.readAsDataURL(file); // Convert image to Base64 before sending
     });
   </script>
 </body>
